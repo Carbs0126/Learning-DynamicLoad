@@ -10,6 +10,7 @@ import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dianping.app.MyActivity;
 import com.dianping.app.MyApplication;
@@ -22,6 +23,7 @@ import com.dianping.app.MyApplication;
  * @author Yimin
  * 
  */
+// 作为中转activity
 public class ForwardActivity extends MyActivity {
 	private FrameLayout rootView;
 	private boolean launched;
@@ -29,7 +31,7 @@ public class ForwardActivity extends MyActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		Log.d("wangwang", "ForwardActivity onCreate");
 		rootView = new FrameLayout(this);
 		rootView.setLayoutParams(new ViewGroup.LayoutParams(
 				ViewGroup.LayoutParams.MATCH_PARENT,

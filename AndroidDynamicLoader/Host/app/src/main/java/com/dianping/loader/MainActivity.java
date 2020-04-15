@@ -10,6 +10,7 @@ import android.content.res.Resources.Theme;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -19,6 +20,7 @@ import com.dianping.app.MyActivity;
 import com.dianping.app.MyApplication;
 import com.dianping.loader.model.FileSpec;
 import com.dianping.loader.model.SiteSpec;
+import com.google.gson.Gson;
 
 /**
  * 主Activity容器，负责启动并装载Fragment
@@ -47,31 +49,70 @@ public class MainActivity extends MyActivity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		Log.d("wangwang", "MainActivity onCreate");
 		Intent intent = getIntent();
 
 		int error = 0;
 		// must be load at the first start
 		do {
 			site = intent.getParcelableExtra("_site");
+
+			Log.d("wangwang", "MainActivity onCreate() intent site : " + new Gson().toJson(site));
+
+			/**
+			 site对象：
+			 {
+			 	"files":[
+					 {
+						 "down":0,
+						 "id":"sample.helloworld.20130703.1",
+						 "length":0,
+						 "md5":"69d3d81fa8cc5f05f1daab16dae89f4c",
+						 "url":"https://raw.github.com/mmin18/AndroidDynamicLoader/master/site/helloworld/sample.helloworld.20130703.1.apk"
+					 }
+			 	],
+			 	"fragments":[
+					 {
+						 "code":"sample.helloworld.20130703.1",
+						 "host":"helloworld",
+						 "name":"sample.helloworld.HelloFragment"	// apk 中的一个fragment
+					 },
+					 {
+						 "code":"sample.helloworld.20130703.1",
+						 "host":"pickname",
+						 "name":"sample.helloworld.PickerFragment"	// apk 中的另一个fragment，内容上用于选择名字
+					 }
+			 	],
+			 	"id":"sample.helloworld.20130703.1"
+			 }
+			 */
+
 			if (site == null) {
 				error = 201; // #201
 				break;
 			}
 			fragmentName = intent.getStringExtra("_fragment");
+			// sample.helloworld.HelloFragment
+
+			Log.d("wangwang", "MainActivity onCreate() fragmentName : " + fragmentName);
 			if (TextUtils.isEmpty(fragmentName)) {
 				error = 202; // #202
 				break;
 			}
 			String code = intent.getStringExtra("_code");
+			Log.d("wangwang", "MainActivity onCreate() code : " + code);
 			if (TextUtils.isEmpty(code)) {
 				loaded = true;
 				break;
 			}
 			file = site.getFile(code);
+			Log.d("wangwang", "MainActivity onCreate() file : " + file);
 			if (file == null) {
 				error = 205; // #205
 				break;
 			}
+			// classLoader 返回的classLoader不应该为null，如果是null，则页面会显示空
+			// 在这之前，MyClassLoader没有走到构造函数中
 			classLoader = MyClassLoader.getClassLoader(site, file);
 			loaded = classLoader != null;
 			if (!loaded) {
@@ -106,6 +147,9 @@ public class MainActivity extends MyActivity {
 
 		Fragment fragment = null;
 		try {
+			// fragmentName : sample.helloworld.HelloFragment
+			// 加载apk中的某个fragment类，然后构造出这个对象
+			Log.d("wangwang", "MainActivity getClassLoader().loadClass --> " + fragmentName);
 			fragment = (Fragment) getClassLoader().loadClass(fragmentName)
 					.newInstance();
 		} catch (Exception e) {

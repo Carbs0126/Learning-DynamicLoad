@@ -48,6 +48,7 @@ public class LoaderActivity extends MyActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Log.d("wangwang", "LoaderActivity onCreate");
 
 		rootView = new FrameLayout(this);
 		rootView.setLayoutParams(new ViewGroup.LayoutParams(

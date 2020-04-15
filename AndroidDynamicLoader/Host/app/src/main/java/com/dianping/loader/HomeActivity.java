@@ -10,6 +10,7 @@ import java.net.URL;
 
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ public class HomeActivity extends MyActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Log.d("wangwang", "HomeActivity onCreate");
 		setContentView(R.layout.activity_home);
 
 		siteUrl = (TextView) findViewById(R.id.siteurl);
@@ -74,6 +76,9 @@ public class HomeActivity extends MyActivity {
 			} else if (v.getId() == R.id.go_last) {
 				String url = ((TextView) findViewById(R.id.last_url)).getText()
 						.toString();
+				Log.d("wangwang", "url : " + url);
+				// url :  app://helloworld    然后直接跳转到 MainActivity 页面
+				// 间接调用了 MyActivity 中的 startActivityForResult()，这个方法中对url做了处理
 				startActivity(url);
 			} else if (v.getId() == R.id.go_helloworld) {
 				siteUrl.setText("https://raw.github.com/mmin18/AndroidDynamicLoader/master/site/helloworld/site.txt");

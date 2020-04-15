@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.dianping.app.MyApplication;
 import com.dianping.loader.model.FileSpec;
@@ -15,9 +16,26 @@ public class MyClassLoader extends DexClassLoader {
 	FileSpec file;
 	MyClassLoader[] deps;
 
+	public static class x extends ClassLoader{
+
+	}
+	// ClassLoader parent : MyApplication.instance().getClassLoader()
 	MyClassLoader(FileSpec file, String dexPath, String optimizedDirectory,
 			String libraryPath, ClassLoader parent, MyClassLoader[] deps) {
 		super(dexPath, optimizedDirectory, libraryPath, parent);
+		// dexPath :
+		// 		/data/user/0/com.dianping.loader/files/repo/sample.helloworld.20130703.1/69d3d81fa8cc5f05f1daab16dae89f4c.apk
+		// optimizedDirectory :
+		// 		/data/user/0/com.dianping.loader/files/repo/sample.helloworld.20130703.1/dexout
+		// libraryPath :
+		// 		null
+		// parent:
+		//		dalvik.system.PathClassLoader
+
+		Log.d("wangwang", "MyClassLoader constructor --> dexPath : " + dexPath);
+		Log.d("wangwang", "MyClassLoader constructor --> optimizedDirectory : " + optimizedDirectory);
+		Log.d("wangwang", "MyClassLoader constructor --> libraryPath : " + libraryPath);
+		Log.d("wangwang", "MyClassLoader constructor --> parentClassLoader : " + parent.getClass());
 		this.file = file;
 		this.deps = deps;
 	}
@@ -26,14 +44,16 @@ public class MyClassLoader extends DexClassLoader {
 	protected Class<?> loadClass(String className, boolean resolve)
 			throws ClassNotFoundException {
 		Class<?> clazz = findLoadedClass(className);
-		if (clazz != null)
+		if (clazz != null) {
 			return clazz;
+		}
 		try {
 			clazz = getParent().loadClass(className);
 		} catch (ClassNotFoundException e) {
 		}
-		if (clazz != null)
+		if (clazz != null) {
 			return clazz;
+		}
 		if (deps != null) {
 			for (MyClassLoader c : deps) {
 				try {
@@ -43,8 +63,9 @@ public class MyClassLoader extends DexClassLoader {
 				}
 			}
 		}
-		if (clazz != null)
+		if (clazz != null) {
 			return clazz;
+		}
 		clazz = findClass(className);
 		return clazz;
 	}

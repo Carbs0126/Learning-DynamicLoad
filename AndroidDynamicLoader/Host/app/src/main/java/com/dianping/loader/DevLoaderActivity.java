@@ -21,6 +21,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.text.Html;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -48,6 +49,7 @@ public class DevLoaderActivity extends MyActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Log.d("wangwang", "DevLoaderActivity onCreate");
 
 		repoManager = ((MyApplication) getApplication()).repositoryManager();
 		text = new TextView(this);
